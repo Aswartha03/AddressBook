@@ -9,7 +9,7 @@ namespace AddressBook.Core.Interfaces
 		public Contact GetContact(int id);
 		public List<Contact> GetAllContacts();
 		public string RemoveContact(int id);
-		public Contact UpdateContact(int id, UserContactRequest request);
+		public Contact UpdateContact(int id, ContactEditRequest request);
 		public Contact AddContact(UserContactRequest request);
 	}
 }

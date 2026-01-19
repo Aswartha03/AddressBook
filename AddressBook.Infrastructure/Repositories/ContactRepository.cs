@@ -18,21 +18,21 @@ namespace AddressBook.Infrastructure.Repositories
 		public Contact AddNewContact(Contact contact)
 		{
 			var res = context.Contacts.Add(contact);
-			Console.WriteLine($"From Repo {res}");
+			Console.WriteLine($"From Repo {res}"); 
 			// mandotary to call SaveChanges to persist data
 			// ACID properties 
-			// context.SaveChanges();  
+			 context.SaveChanges();
 			return contact;
 		}
 
 		public string DeleteContact(Contact contact)
 		{
 			context.Contacts.Remove(contact);
-			//context.SaveChanges();
-			return "Contact Successfully Created";
+			context.SaveChanges();
+			return "Contact Successfully Deleted";
 		}
 
-		public Contact EditContactById(UserContactRequest newContact, Contact existingContact)
+		public Contact EditContactById(ContactEditRequest newContact, Contact existingContact)
 		{
 			if (newContact.Name != null)
 			{
@@ -50,7 +50,7 @@ namespace AddressBook.Infrastructure.Repositories
 			{
 				existingContact.Address = newContact.Address;
 			}
-			//context.SaveChanges();
+			context.SaveChanges();
 			return existingContact;
 		}
 

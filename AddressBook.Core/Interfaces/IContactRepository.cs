@@ -8,7 +8,7 @@ namespace AddressBook.Core.Interfaces
 	{
 		public Contact AddNewContact(Contact contact);
 		public string DeleteContact(Contact contact);
-		public Contact EditContactById(UserContactRequest newContact, Contact existingContact);
+		public Contact EditContactById(ContactEditRequest newContact, Contact existingContact);
 
 		public List<Contact> GetAllContacts();
 		public Contact GetContactById(int id);

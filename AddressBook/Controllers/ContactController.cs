@@ -70,7 +70,7 @@ namespace AddressBook.Controllers
 
 
 		[HttpPatch("edit-contact/{id}")]
-		public IActionResult UpdateContactById(int id, UserContactRequest updatedRequest)
+		public IActionResult UpdateContactById(int id, ContactEditRequest updatedRequest)
 		{
 			Contact updatedContact = contactService.UpdateContact(id, updatedRequest);
 			// Will get null or updatedContact

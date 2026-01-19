@@ -45,7 +45,7 @@ namespace AddressBook.Infrastructure.Services
 		public string RemoveContact(int id)
 		{
 			Contact contact = contactRepository.GetContactById(id);
-			if (contact == null)
+			if (contact == null) 
 			{
 				return "Contact Not Found to Delete";
 			}
@@ -53,7 +53,7 @@ namespace AddressBook.Infrastructure.Services
 			return result;
 		}
 
-		public Contact UpdateContact(int id, UserContactRequest newContact)
+		public Contact UpdateContact(int id, ContactEditRequest newContact)
 		{
 			Contact contact = contactRepository.GetContactById(id);
 			if (contact == null)
