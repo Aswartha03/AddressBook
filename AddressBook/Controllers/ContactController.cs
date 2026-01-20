@@ -1,67 +1,66 @@
+using AddressBook.Core.Common;
 using AddressBook.Core.DTO;
-using AddressBook.Core.Entities;
 using AddressBook.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AddressBook.Controllers
+namespace AddressBook.WebApi.Controllers
 {
 	[ApiController]
-	[Route("contact")]
+	[Route("api/contacts")] 
 	public class ContactController : ControllerBase
 	{
 		private readonly IContactService contactService;
 		public ContactController(IContactService contactService)
 		{
 			this.contactService = contactService;
-		}
-		[HttpPost("add-contact")]
-		public IActionResult CreateContact(UserContactRequest newContact)
+		} 
+
+		[HttpPost("add")] 
+		public IActionResult CreateContact(CreateContactRequest request)
 		{
-			Contact addedContact = contactService.AddContact(newContact);
-			// Will get newly added Contact
-			return Created("", new ApiResponse<Contact>
+			ContactResponse createdContact = this.contactService.CreateContact(request);
+			return Created("",new ApiResponse<ContactResponse>
 			{
-				Message = "Contact Successfully Added",
-				Data = addedContact
+				Message = "Contact Created Successfully",
+				Data = createdContact
 			});
 		}
 
-		[HttpGet("all-contacts")]
-		public IActionResult AllContacts()
+		[HttpGet("all")]
+		public IActionResult GetContacts()
 		{
-			List<Contact> contacts = contactService.GetAllContacts();
-			// Will Get all contacts or empty array
-			if (contacts.Count == 0)
+			List<ContactResponse> contactsResponse = this.contactService.GetAllContacts();
+			if (contactsResponse.Count == 0) 
 			{
-				var response = Ok(new ApiResponse<Object>
+				var response = Ok(new ApiResponse<string>
 				{
 					Message = "No Contacts Are Found",
 					Data = null
 				});
 				return NotFound(response);
 			}
-			return Ok(new ApiResponse<List<Contact>>
+			return Ok(new ApiResponse<List<ContactResponse>>
 			{
 				Message = "Contacts Fetched Successfully",
-				Data = contacts
-			});
+				Data = contactsResponse
+			}); 
 		}
 
-		[HttpGet("byid")]
-		public IActionResult ContactById(int id)
+		[HttpGet]
+		// Will Get id by Query Parameter 
+		public IActionResult GetContact(int id) 
 		{
-			Contact contact = contactService.GetContact(id);
-			// null or contact
-			if (contact == null)
+			ContactResponse contact = this.contactService.GetContactById(id);
+			if (contact == null) 
 			{
-				var response = new ApiResponse<Object>
+				var response = new ApiResponse<string>
 				{
 					Message = "Contact Not Found",
-					Data = null
+					Data = null  
 				};
 				return NotFound(response);
 			}
-			return Ok(new ApiResponse<Contact>
+			return Ok(new ApiResponse<ContactResponse>
 			{
 				Message = "Contact Fetched Successfully",
 				Data = contact
@@ -69,48 +68,44 @@ namespace AddressBook.Controllers
 		}
 
 
-		[HttpPatch("edit-contact/{id}")]
-		public IActionResult UpdateContactById(int id, ContactEditRequest updatedRequest)
+		[HttpPatch("edit/{id}")] 
+		public IActionResult UpdateContact(int id, UpdateContactRequest updatedRequest)
 		{
-			Contact updatedContact = contactService.UpdateContact(id, updatedRequest);
-			// Will get null or updatedContact
+			ContactResponse updatedContact = this.contactService.UpdateContactById(id, updatedRequest);
 			if (updatedContact == null)
 			{
-				var response = new ApiResponse<Object>
+				var response = new ApiResponse<string>
 				{
 					Message = "Contact Not Found to Update",
 					Data = null
 				};
 				return NotFound(response);
 			}
-			return Ok(new ApiResponse<Contact>
+			return Ok(new ApiResponse<ContactResponse>
 			{
 				Message = "Contact Updated Successsfully",
 				Data = updatedContact
 			});
 		}
 
-		[HttpDelete("delete-contact/{id}")]
-		public IActionResult DeleteContactById(int id)
+		[HttpDelete("delete/{id}")] 
+		public IActionResult DeleteContact(int id)
 		{
-			string result = contactService.RemoveContact(id);
-			// will get not found or deleted
-			if (result == "Contact Not Found to Delete")
+			bool deleted = this.contactService.DeleteContactById(id);
+			if (!deleted)
 			{
-				var response = new ApiResponse<Object>
+				var response = new ApiResponse<string>
 				{
-					Message = result,
+					Message = "Contact Not Found To Delete",
 					Data = null
-				};
-				return NotFound(response);
+				}; 
+				return NotFound(response); 
 			}
-
-			return Ok(new ApiResponse<Object>
+			return Ok(new ApiResponse<string>
 			{
-				Message = result,
+				Message = "Contact Successfully Deleted",
 				Data = null
 			});
 		}
-
 	}
 }

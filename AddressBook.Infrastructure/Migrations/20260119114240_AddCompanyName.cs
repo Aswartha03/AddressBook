@@ -15,7 +15,7 @@ namespace AddressBook.Infrastructure.Migrations
                 table: "Contacts",
                 type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""); 
         }
 
         /// <inheritdoc />
@@ -23,7 +23,7 @@ namespace AddressBook.Infrastructure.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Company",
-                table: "Contacts");
+                table: "Contacts"); 
         }
     }
 }

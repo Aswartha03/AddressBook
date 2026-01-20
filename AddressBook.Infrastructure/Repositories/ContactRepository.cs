@@ -2,67 +2,51 @@
 using AddressBook.Core.Entities;
 using AddressBook.Core.Interfaces;
 using AddressBook.Infrastructure.Data;
+using AutoMapper;
 
 namespace AddressBook.Infrastructure.Repositories
 {
 	public class ContactRepository : IContactRepository
 	{
-
 		private readonly AppDbContext context;
-
-		public ContactRepository(AppDbContext context)
+		private readonly IMapper mapper;
+		public ContactRepository(AppDbContext context , IMapper mapper)
 		{
 			this.context = context;
+			this.mapper = mapper;
 		}
 
-		public Contact AddNewContact(Contact contact)
+		public Contact Add(Contact contact)
 		{
-			var res = context.Contacts.Add(contact);
-			Console.WriteLine($"From Repo {res}"); 
-			// mandotary to call SaveChanges to persist data
-			// ACID properties 
-			 context.SaveChanges();
+			this.context.Contacts.Add(contact);
+			this.context.SaveChanges();
 			return contact;
 		}
 
-		public string DeleteContact(Contact contact)
+		public bool Delete(Contact contact)
 		{
-			context.Contacts.Remove(contact);
-			context.SaveChanges();
-			return "Contact Successfully Deleted";
+			this.context.Contacts.Remove(contact);
+			this.context.SaveChanges();
+			return true;
 		}
 
-		public Contact EditContactById(ContactEditRequest newContact, Contact existingContact)
+		public Contact Update(UpdateContactRequest updateRequest, Contact existingContact)
 		{
-			if (newContact.Name != null)
-			{
-				existingContact.Name = newContact.Name;
-			}
-			if (newContact.Email != null)
-			{
-				existingContact.Email = newContact.Email;
-			}
-			if (newContact.Phone != null)
-			{
-				existingContact.Phone = newContact.Phone;
-			}
-			if (newContact.Address != null)
-			{
-				existingContact.Address = newContact.Address;
-			}
-			context.SaveChanges();
+			// Map the updated fields from updateRequest to existingContact
+			this.mapper.Map(updateRequest, existingContact);
+			this.context.SaveChanges();
 			return existingContact;
 		}
 
-		public List<Contact> GetAllContacts()
+		public List<Contact> GetAll()
 		{
-			List<Contact> contacts = context.Contacts.ToList();
+			List<Contact> contacts = this.context.Contacts.ToList();
 			return contacts;
 		}
 
-		public Contact GetContactById(int id)
+		public Contact GetById(int id)
 		{
-			Contact? contact = context.Contacts.FirstOrDefault(c => c.ContactId == id);
+			Contact? contact = this.context.Contacts.SingleOrDefault(c => c.ContactId == id);
 			return contact;
 		}
 	}

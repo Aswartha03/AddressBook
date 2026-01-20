@@ -1,16 +1,15 @@
-﻿
-using AddressBook.Core.DTO;
+﻿using AddressBook.Core.DTO;
 using AddressBook.Core.Entities;
 
 namespace AddressBook.Core.Interfaces
 {
 	public interface IContactRepository
 	{
-		public Contact AddNewContact(Contact contact);
-		public string DeleteContact(Contact contact);
-		public Contact EditContactById(ContactEditRequest newContact, Contact existingContact);
+		public Contact Add(Contact contact);
+		public bool Delete(Contact contact);
+		public Contact Update(UpdateContactRequest newContact, Contact existingContact);
 
-		public List<Contact> GetAllContacts();
-		public Contact GetContactById(int id);
+		public List<Contact> GetAll();
+		public Contact GetById(int id);
 	}
 }
