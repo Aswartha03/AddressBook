@@ -1,9 +1,9 @@
-﻿
-namespace AddressBook.Core.DTO
+﻿namespace AddressBook.Core.Common
+
 {
 	public class ApiResponse<T>
 	{
 		public string Message { get; set; }
-		public T Data { get; set; }
+		public T Data { get; set; }  
 	}
 }

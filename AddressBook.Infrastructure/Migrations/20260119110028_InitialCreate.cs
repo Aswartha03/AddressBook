@@ -11,7 +11,7 @@ namespace AddressBook.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable( 
                 name: "Contacts",
                 columns: table => new
                 {
@@ -22,8 +22,8 @@ namespace AddressBook.Infrastructure.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
+                }, 
+                constraints: table => 
                 {
                     table.PrimaryKey("PK_Contacts", x => x.ContactId);
                 });

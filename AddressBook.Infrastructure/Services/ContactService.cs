@@ -1,67 +1,73 @@
-﻿
-using AddressBook.Core.DTO;
+﻿using AddressBook.Core.DTO;
 using AddressBook.Core.Entities;
 using AddressBook.Core.Interfaces;
 using AutoMapper;
 
 namespace AddressBook.Infrastructure.Services
-{
+{   
 	public class ContactService : IContactService
 	{
 		private readonly IContactRepository contactRepository;
 		private readonly IMapper mapper;
 		public ContactService(IContactRepository contactRepo, IMapper mapper)
-		{
+		{   
 			this.contactRepository = contactRepo;
 			this.mapper = mapper;
 		}
 
-		public Contact AddContact(UserContactRequest request)
+		public ContactResponse CreateContact(CreateContactRequest request)
 		{
-			// Auto Mapping
-			Contact newContact = mapper.Map<Contact>(request);
-			newContact.CreatedAt = DateTime.Now;
-			// Adding Contact
-			Contact AddedContact = contactRepository.AddNewContact(newContact);
-			return AddedContact;
+			// Auto Mapping from ContactRequest to Contact Entity
+			Contact contact = this.mapper.Map<Contact>(request);
+			contact.CreatedAt = DateTime.Now;
+			Contact createdContact = this.contactRepository.Add(contact);
+			// Auto Mapping from Contact Entity to ContactResponse
+			ContactResponse contactResponse = this.mapper.Map<ContactResponse>(createdContact);
+			return contactResponse;
 		}
 
-		public List<Contact> GetAllContacts()
+		public List<ContactResponse> GetAllContacts()
 		{
-			List<Contact> contacts = contactRepository.GetAllContacts();
-			return contacts;
+			List<Contact> contacts = this.contactRepository.GetAll();
+			// mappping from Contact Entity to ContactResponse for each contact in contacts list 
+			List<ContactResponse> contactResponses = contacts.Select(contact => this.mapper.Map<ContactResponse>(contact)).ToList();
+			return contactResponses; 
 		}
 
-		public Contact GetContact(int id)
+		public ContactResponse GetContactById(int id) 
 		{
-			Contact contact = contactRepository.GetContactById(id);
+			Contact contact = this.contactRepository.GetById(id); 
 			if (contact == null)
 			{
 				return null;
 			}
-			return contact;
+			// Auto Mapping from Contact Entity to ContactResponse
+			ContactResponse contactResponse = this.mapper.Map<ContactResponse>(contact);
+			return contactResponse;
 		}
 
-		public string RemoveContact(int id)
+		public bool DeleteContactById(int id)
 		{
-			Contact contact = contactRepository.GetContactById(id);
+			Contact contact = this.contactRepository.GetById(id);
 			if (contact == null) 
 			{
-				return "Contact Not Found to Delete";
+				return false;
 			}
-			string result = contactRepository.DeleteContact(contact);
-			return result;
+			this.contactRepository.Delete(contact);
+			return true;
 		}
 
-		public Contact UpdateContact(int id, ContactEditRequest newContact)
+		public ContactResponse UpdateContactById(int id, UpdateContactRequest request)
 		{
-			Contact contact = contactRepository.GetContactById(id);
+			Contact contact = this.contactRepository.GetById(id);
 			if (contact == null)
 			{
-				return null;
+				return null; 
 			}
-			Contact updatedContact = contactRepository.EditContactById(newContact, contact);
-			return updatedContact;
+			Contact updatedContact = this.contactRepository.Update(request, contact);
+			// Auto Mapping from Contact Entity to ContactResponse
+			ContactResponse contactResponse = this.mapper.Map<ContactResponse>(updatedContact);
+			return contactResponse;
 		}
 
 	}

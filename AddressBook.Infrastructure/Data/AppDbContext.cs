@@ -1,6 +1,4 @@
-﻿
-using System.Collections.Generic;
-using AddressBook.Core.Entities;
+﻿using AddressBook.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace AddressBook.Infrastructure.Data
